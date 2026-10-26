@@ -1,0 +1,15 @@
+bin/
+obj/
+.vs/
+artifacts/
+data/
+debug_log.txt
+sign.ps1
+
+*.user
+*.suo
+*.pfx
+*.p12
+*.key
+*.cer
+*.crt
