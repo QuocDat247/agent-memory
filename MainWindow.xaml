@@ -8,8 +8,7 @@
         MinHeight="520"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource PageBrush}"
-        Foreground="{StaticResource TextBrush}"
-        SizeChanged="MainWindow_SizeChanged">
+        Foreground="{StaticResource TextBrush}">
     <Window.Resources>
         <Style x:Key="ModeButtonStyle" TargetType="Button">
             <Setter Property="Padding" Value="18,10" />
@@ -79,12 +78,12 @@
                 CornerRadius="12"
                 Padding="18">
             <ScrollViewer x:Name="ChatScrollViewer"
-                          VerticalScrollBarVisibility="Auto"
-                          HorizontalScrollBarVisibility="Disabled"
-                          SizeChanged="ChatScrollViewer_SizeChanged">
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
                 <StackPanel x:Name="ChatHistory">
                     <Border x:Name="WelcomeBubble"
                             HorizontalAlignment="Left"
+                            MaxWidth="680"
                             Margin="0,0,48,12"
                             Padding="14"
                             Background="#F2F4F7"

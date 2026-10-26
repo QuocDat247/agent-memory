@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace PersonalLearningAgent;
 
@@ -18,18 +17,15 @@ public partial class MainWindow : Window
     private readonly MemoryStore _memoryStore = new();
     private readonly AppSettingsStore _settingsStore = new();
     private readonly Dictionary<TextBox, (MemoryEntry Entry, Border Bubble)> _memoryResponses = [];
-    private readonly List<Border> _chatBubbles = [];
     private AgentMode _mode = AgentMode.Remember;
     private MemoryEntry? _selectedMemoryToDelete;
 
     public MainWindow()
     {
         InitializeComponent();
-        _chatBubbles.Add(WelcomeBubble);
         DataLocation.Text = $"Tệp dữ liệu cục bộ: {_memoryStore.DataFilePath}";
         LoadAppearanceSettings();
         UpdateModeButtons();
-        UpdateChatBubbleWidths();
         MessageInput.Focus();
     }
 
@@ -55,11 +51,9 @@ public partial class MainWindow : Window
         {
             Owner = this
         };
-        dialog.PreviewColorChanged += ApplyBackgroundColor;
 
         if (dialog.ShowDialog() != true)
         {
-            ApplyBackgroundColor(currentColor);
             return;
         }
 
@@ -78,16 +72,6 @@ public partial class MainWindow : Window
             ApplyBackgroundColor(currentColor);
             ShowError($"Không có quyền lưu cài đặt: {exception.Message}");
         }
-    }
-
-    private void ChatScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
-    {
-        UpdateChatBubbleWidths();
-    }
-
-    private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
-    {
-        Dispatcher.BeginInvoke(DispatcherPriority.Render, (Action)UpdateChatBubbleWidths);
     }
 
     private void DeleteButton_Click(object sender, RoutedEventArgs e)
@@ -126,7 +110,6 @@ public partial class MainWindow : Window
             foreach (var response in matchingResponses)
             {
                 ChatHistory.Children.Remove(response.Value.Bubble);
-                _chatBubbles.Remove(response.Value.Bubble);
                 _memoryResponses.Remove(response.Key);
             }
 
@@ -297,38 +280,12 @@ public partial class MainWindow : Window
         };
 
         ChatHistory.Children.Add(message);
-        _chatBubbles.Add(message);
         if (memoryEntry is not null)
         {
             _memoryResponses.Add(messageText, (memoryEntry, message));
         }
 
         ChatScrollViewer.ScrollToEnd();
-    }
-
-    private void UpdateChatBubbleWidths()
-    {
-        if (ChatScrollViewer is null)
-        {
-            return;
-        }
-
-        var availableWidth = ChatScrollViewer.ActualWidth;
-
-        if (availableWidth <= 0)
-        {
-            availableWidth = ChatScrollViewer.ViewportWidth;
-            if (availableWidth <= 0)
-            {
-                return;
-            }
-        }
-
-        foreach (var bubble in _chatBubbles)
-        {
-            var horizontalMargin = bubble.Margin.Left + bubble.Margin.Right;
-            bubble.Width = Math.Max(0, availableWidth * 0.88 - horizontalMargin);
-        }
     }
 
     private void LoadAppearanceSettings()

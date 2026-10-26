@@ -16,8 +16,6 @@ public partial class SettingsWindow : Window
 
     public string SelectedColor { get; private set; } = AppSettings.Default.BackgroundColor;
 
-    public event Action<string>? PreviewColorChanged;
-
     public static bool IsValidColor(string? value) =>
         value is not null && HexColorPattern.IsMatch(value);
 
@@ -30,38 +28,16 @@ public partial class SettingsWindow : Window
 
         if (TryParseColor(ColorInput.Text, out var color))
         {
-            UpdateColorPreview(color);
+            ColorPreview.Background = new SolidColorBrush(color);
+            SaveButton.IsEnabled = true;
+            ValidationMessage.Text = string.Empty;
         }
         else
         {
+            ColorPreview.Background = new SolidColorBrush(Color.FromRgb(244, 246, 251));
             SaveButton.IsEnabled = false;
             ValidationMessage.Text = "Mã màu không hợp lệ. Hãy dùng định dạng #RRGGBB.";
         }
-    }
-
-    private void ColorPreview_Click(object sender, RoutedEventArgs e)
-    {
-        if (TryParseColor(ColorInput.Text, out var color))
-        {
-            ColorWheel.SetColor(color);
-        }
-
-        ColorPickerPopup.IsOpen = !ColorPickerPopup.IsOpen;
-    }
-
-    private void SettingsWindow_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-    {
-        if (e.Key == System.Windows.Input.Key.Escape && ColorPickerPopup.IsOpen)
-        {
-            ColorPickerPopup.IsOpen = false;
-            e.Handled = true;
-        }
-    }
-
-    private void ColorWheel_ColorChanged(Color color)
-    {
-        ColorInput.Text = ToHex(color);
-        UpdateColorPreview(color);
     }
 
     private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -74,19 +50,6 @@ public partial class SettingsWindow : Window
 
         SelectedColor = ToHex(color);
         DialogResult = true;
-    }
-
-    private void UpdateColorPreview(Color color)
-    {
-        var hex = ToHex(color);
-        ColorPreview.Background = new SolidColorBrush(color);
-        SaveButton.IsEnabled = true;
-        ValidationMessage.Text = string.Empty;
-        if (!string.Equals(_lastPreviewColor, hex, StringComparison.OrdinalIgnoreCase))
-        {
-            _lastPreviewColor = hex;
-            PreviewColorChanged?.Invoke(hex);
-        }
     }
 
     private static bool TryParseColor(string? value, out Color color)
@@ -103,6 +66,4 @@ public partial class SettingsWindow : Window
 
     private static string ToHex(Color color) =>
         $"#{color.R:X2}{color.G:X2}{color.B:X2}";
-
-    private string? _lastPreviewColor;
 }

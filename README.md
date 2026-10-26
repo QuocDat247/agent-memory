@@ -33,9 +33,7 @@ Quy trình build mặc định không tự ký ứng dụng. Không đưa chứn
 3. Chọn lại **Ghi nhớ** bất cứ lúc nào để tiếp tục thêm ghi nhớ.
 4. Có thể kéo chuột để chọn văn bản trong khung chat rồi nhấn Ctrl+C để sao chép tin nhắn của bạn hoặc câu trả lời của trợ lý.
 5. Khi đã chọn một câu trả lời tìm thấy ghi nhớ, nút **Xóa** được bật. Nhấn nút sẽ hỏi xác nhận rồi xóa toàn bộ ghi nhớ tương ứng khỏi tệp dữ liệu; hủy thao tác sẽ giữ nguyên dữ liệu.
-6. Mở **Cài đặt** để nhập màu nền theo mã HEX `#RRGGBB` hoặc nhấn ô màu để mở vòng chọn màu và kéo để chọn. Màu nền cập nhật trực tiếp khi chọn; **Lưu** giữ thay đổi, còn **Hủy** khôi phục màu trước đó.
-
-Các nút được bo tròn đồng bộ. Bong bóng chat tự tăng/giảm chiều rộng theo cửa sổ (tối đa khoảng 88% vùng hội thoại) để tận dụng không gian khi phóng to.
+6. Mở **Cài đặt** để nhập màu nền theo mã HEX `#RRGGBB`. Nhấn **Lưu** để áp dụng màu mới.
 
 Mỗi ghi nhớ được nối thêm thành một dòng JSON trong `data\memories.jsonl`; dữ liệu hiện có được giữ nguyên. Khi chạy từ thư mục dự án, vị trí lưu là `D:\PersonalLearningAgent\data\memories.jsonl`. Nếu chạy bản phát hành không kèm thư mục dự án, dữ liệu được lưu trong thư mục dữ liệu ứng dụng thuộc Local AppData.
 
