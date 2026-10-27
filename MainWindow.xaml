@@ -10,7 +10,9 @@
         Background="{StaticResource PageBrush}"
         Foreground="{StaticResource TextBrush}">
     <Window.Resources>
-        <Style x:Key="ModeButtonStyle" TargetType="Button">
+        <Style x:Key="ModeButtonStyle"
+               TargetType="Button"
+               BasedOn="{StaticResource RoundedButtonStyle}">
             <Setter Property="Padding" Value="18,10" />
             <Setter Property="Margin" Value="0,0,10,0" />
             <Setter Property="FontSize" Value="14" />
@@ -35,6 +37,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0">
                 <TextBlock Text="Trợ lý học tập cá nhân"
@@ -57,18 +60,87 @@
                                VerticalAlignment="Center"
                                Foreground="{StaticResource MutedBrush}"
                                Text="Nhập nội dung mới để lưu." />
+                    <StackPanel x:Name="SearchResultCountPanel"
+                                Margin="20,0,0,0"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                Visibility="Collapsed">
+                        <TextBlock Text="Số kết quả:"
+                                   Margin="0,0,6,0"
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource MutedBrush}" />
+                        <ComboBox x:Name="SearchResultCountComboBox"
+                                  Width="74"
+                                  IsEditable="True"
+                                  Text="5"
+                                  SelectionChanged="SearchResultCountComboBox_SelectionChanged"
+                                  LostKeyboardFocus="SearchResultCountComboBox_LostKeyboardFocus"
+                                  KeyDown="SearchResultCountComboBox_KeyDown">
+                            <ComboBoxItem Content="5" />
+                            <ComboBoxItem Content="10" />
+                            <ComboBoxItem Content="15" />
+                            <ComboBoxItem Content="20" />
+                            <ComboBoxItem Content="25" />
+                            <ComboBoxItem Content="30" />
+                        </ComboBox>
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
-            <Button Grid.Column="1"
-                    Content="Cài đặt"
-                    Padding="14,9"
-                    VerticalAlignment="Top"
-                    FontSize="13"
-                    Background="White"
-                    Foreground="#475467"
-                    BorderBrush="#D0D5DD"
-                    Cursor="Hand"
-                    Click="SettingsButton_Click" />
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Top">
+                <Button Style="{StaticResource RoundedButtonStyle}"
+                        Margin="0,0,6,0"
+                        Content="Dữ liệu"
+                        Padding="12,8"
+                        FontSize="12"
+                        Background="White"
+                        Foreground="#475467"
+                        BorderBrush="#D0D5DD"
+                        Cursor="Hand"
+                        Click="DataButton_Click" />
+                <Button Style="{StaticResource RoundedButtonStyle}"
+                        Margin="0,0,6,0"
+                        Content="Sao lưu"
+                        Padding="12,8"
+                        FontSize="12"
+                        Background="White"
+                        Foreground="#475467"
+                        BorderBrush="#D0D5DD"
+                        Cursor="Hand"
+                        Click="BackupButton_Click" />
+                <Button Style="{StaticResource RoundedButtonStyle}"
+                        Margin="0,0,6,0"
+                        Content="Khôi phục"
+                        Padding="12,8"
+                        FontSize="12"
+                        Background="White"
+                        Foreground="#475467"
+                        BorderBrush="#D0D5DD"
+                        Cursor="Hand"
+                        Click="RestoreButton_Click" />
+                <Button x:Name="UndoDeleteButton"
+                        Style="{StaticResource RoundedButtonStyle}"
+                        Margin="0,0,6,0"
+                        Content="Hoàn tác xóa"
+                        Padding="12,8"
+                        FontSize="12"
+                        Background="#FFFAEB"
+                        Foreground="#B54708"
+                        BorderBrush="#FEDF89"
+                        Cursor="Hand"
+                        Visibility="Collapsed"
+                        Click="UndoDeleteButton_Click" />
+                <Button Style="{StaticResource RoundedButtonStyle}"
+                        Content="Cài đặt"
+                        Padding="12,8"
+                        FontSize="12"
+                        Background="White"
+                        Foreground="#475467"
+                        BorderBrush="#D0D5DD"
+                        Cursor="Hand"
+                        Click="SettingsButton_Click" />
+            </StackPanel>
         </Grid>
 
         <Border Grid.Row="1"
@@ -78,29 +150,24 @@
                 CornerRadius="12"
                 Padding="18">
             <ScrollViewer x:Name="ChatScrollViewer"
-                      VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Disabled">
-                <StackPanel x:Name="ChatHistory">
-                    <Border x:Name="WelcomeBubble"
-                            HorizontalAlignment="Left"
-                            MaxWidth="680"
-                            Margin="0,0,48,12"
-                            Padding="14"
-                            Background="#F2F4F7"
-                            CornerRadius="10">
-                        <TextBox Text="Xin chào! Chọn “Ghi nhớ” để lưu thông tin hoặc “Đọc” để tìm lại nội dung gần giống nhất trong dữ liệu đã lưu."
-                                 IsReadOnly="True"
-                                 IsReadOnlyCaretVisible="True"
-                                 TextWrapping="Wrap"
-                                 FontSize="14"
-                                 BorderThickness="0"
-                                 Padding="0"
-                                 Background="Transparent"
-                                 Focusable="True"
-                                 Cursor="IBeam"
-                                 SelectionChanged="ChatMessage_SelectionChanged" />
-                    </Border>
-                </StackPanel>
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <Grid x:Name="ChatSurface">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel x:Name="ChatHistory"
+                                Grid.ColumnSpan="2"
+                                Width="{Binding ActualWidth, ElementName=ChatSurface}" />
+                    <Border Grid.ColumnSpan="2"
+                            Width="1"
+                            Margin="0,0,0,12"
+                            HorizontalAlignment="Center"
+                            Background="#98A2B3"
+                            IsHitTestVisible="False"
+                            Panel.ZIndex="1" />
+                </Grid>
             </ScrollViewer>
         </Border>
 
@@ -114,11 +181,14 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Button x:Name="DeleteButton"
                         Grid.Column="0"
+                        Style="{StaticResource RoundedButtonStyle}"
                         Padding="14,9"
                         Content="Xóa"
                         FontSize="14"
@@ -131,7 +201,43 @@
                         Opacity="0.5"
                         ToolTip="Chọn một câu trả lời của trợ lý để xóa ghi nhớ tương ứng."
                         Click="DeleteButton_Click" />
-                <Grid Grid.Column="1" Margin="12,0,0,0">
+                <Button x:Name="ColorButton"
+                        Grid.Column="1"
+                        Style="{StaticResource RoundedButtonStyle}"
+                        Margin="8,0,0,0"
+                        Padding="14,9"
+                        Content="Tô màu"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="#344054"
+                        Background="#F2F4F7"
+                        BorderBrush="#D0D5DD"
+                        Cursor="Hand"
+                        IsEnabled="False"
+                        Opacity="0.5"
+                        ToolTip="Chọn văn bản trong bong bóng chat để tô màu."
+                        Click="ColorButton_Click" />
+                <Grid x:Name="CategoryInputHost"
+                      Grid.Column="2"
+                      Width="142"
+                      Margin="12,0,0,0"
+                      Visibility="Collapsed">
+                    <TextBox x:Name="CategoryInput"
+                             Padding="4,8"
+                             BorderThickness="0"
+                             Background="Transparent"
+                             FontSize="12"
+                             VerticalContentAlignment="Center"
+                             ToolTip="Danh mục tùy chọn cho ghi nhớ"
+                             TextChanged="CategoryInput_TextChanged" />
+                    <TextBlock x:Name="CategoryHint"
+                               Margin="4,8,0,0"
+                               IsHitTestVisible="False"
+                               Foreground="#98A2B3"
+                               FontSize="12"
+                               Text="Danh mục (tùy chọn)" />
+                </Grid>
+                <Grid x:Name="MessageInputHost" Grid.Column="3" Margin="12,0,0,0">
                     <TextBox x:Name="MessageInput"
                              MinHeight="38"
                              MaxHeight="130"
@@ -151,7 +257,8 @@
                                FontSize="14"
                                Text="Nhập nội dung cần ghi nhớ..." />
                 </Grid>
-                <Button Grid.Column="2"
+                <Button Grid.Column="4"
+                        Style="{StaticResource RoundedButtonStyle}"
                         Margin="12,0,0,0"
                         Padding="18,9"
                         Content="Gửi"
@@ -162,6 +269,30 @@
                         BorderThickness="0"
                         Cursor="Hand"
                         Click="SendButton_Click" />
+                <Popup x:Name="ColorPalettePopup"
+                       PlacementTarget="{Binding ElementName=ColorButton}"
+                       Placement="Top"
+                       StaysOpen="False"
+                       AllowsTransparency="True"
+                       PopupAnimation="Fade">
+                    <Border Padding="6"
+                            Background="White"
+                            BorderBrush="#D0D5DD"
+                            BorderThickness="1"
+                            CornerRadius="6">
+                        <UniformGrid Rows="3" Columns="3">
+                            <Button Tag="#E53935" ToolTip="Đỏ" Background="#E53935" Click="ColorSwatch_Click" Width="30" Height="30" Margin="3" BorderBrush="White" Style="{StaticResource RoundedButtonStyle}" />
+                            <Button Tag="#FB8C00" ToolTip="Cam" Background="#FB8C00" Click="ColorSwatch_Click" Width="30" Height="30" Margin="3" BorderBrush="White" Style="{StaticResource RoundedButtonStyle}" />
+                            <Button Tag="#F9A825" ToolTip="Vàng" Background="#F9A825" Click="ColorSwatch_Click" Width="30" Height="30" Margin="3" BorderBrush="White" Style="{StaticResource RoundedButtonStyle}" />
+                            <Button Tag="#43A047" ToolTip="Xanh lá cây" Background="#43A047" Click="ColorSwatch_Click" Width="30" Height="30" Margin="3" BorderBrush="White" Style="{StaticResource RoundedButtonStyle}" />
+                            <Button Tag="#1B5E20" ToolTip="Xanh lá đậm" Background="#1B5E20" Click="ColorSwatch_Click" Width="30" Height="30" Margin="3" BorderBrush="White" Style="{StaticResource RoundedButtonStyle}" />
+                            <Button Tag="#00ACC1" ToolTip="Xanh lơ" Background="#00ACC1" Click="ColorSwatch_Click" Width="30" Height="30" Margin="3" BorderBrush="White" Style="{StaticResource RoundedButtonStyle}" />
+                            <Button Tag="#1E88E5" ToolTip="Xanh dương" Background="#1E88E5" Click="ColorSwatch_Click" Width="30" Height="30" Margin="3" BorderBrush="White" Style="{StaticResource RoundedButtonStyle}" />
+                            <Button Tag="#1A237E" ToolTip="Xanh hải quân" Background="#1A237E" Click="ColorSwatch_Click" Width="30" Height="30" Margin="3" BorderBrush="White" Style="{StaticResource RoundedButtonStyle}" />
+                            <Button Tag="#8E24AA" ToolTip="Tím" Background="#8E24AA" Click="ColorSwatch_Click" Width="30" Height="30" Margin="3" BorderBrush="White" Style="{StaticResource RoundedButtonStyle}" />
+                        </UniformGrid>
+                    </Border>
+                </Popup>
             </Grid>
         </Border>
 

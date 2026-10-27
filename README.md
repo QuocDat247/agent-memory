@@ -1,6 +1,6 @@
 # Personal Learning Agent
 
-Ứng dụng desktop WPF chạy cục bộ để ghi nhớ và tìm lại kiến thức. Ứng dụng không dùng model AI, dịch vụ Internet hay thư viện bên ngoài.
+Ứng dụng desktop WPF chạy cục bộ để ghi nhớ và tìm lại kiến thức. Ứng dụng không dùng model AI hoặc dịch vụ Internet khi sử dụng; thư viện Open XML được đóng gói để xuất tài liệu Word/Excel.
 
 ## Chạy ứng dụng
 
@@ -29,11 +29,16 @@ Quy trình build mặc định không tự ký ứng dụng. Không đưa chứn
 ## Sử dụng
 
 1. Chọn **Ghi nhớ**, nhập nội dung vào khung phía dưới rồi nhấn Enter hoặc **Gửi**. Nhấn Shift+Enter để xuống dòng.
-2. Chọn **Đọc**, nhập nội dung hoặc từ khóa rồi nhấn Enter hoặc **Gửi**. Ứng dụng hiển thị ghi nhớ phù hợp nhất, gồm cả ID và điểm tương đồng ước tính.
+2. Chọn **Đọc**, nhập nội dung hoặc từ khóa rồi nhấn Enter hoặc **Gửi**. Ứng dụng hiển thị nhiều ghi nhớ phù hợp, gồm ID và điểm tương đồng ước tính. Chỉnh số lượng bằng danh sách hoặc nhập một số nguyên dương; tìm theo ID chính xác chỉ trả về một ghi nhớ.
 3. Chọn lại **Ghi nhớ** bất cứ lúc nào để tiếp tục thêm ghi nhớ.
-4. Có thể kéo chuột để chọn văn bản trong khung chat rồi nhấn Ctrl+C để sao chép tin nhắn của bạn hoặc câu trả lời của trợ lý.
-5. Khi đã chọn một câu trả lời tìm thấy ghi nhớ, nút **Xóa** được bật. Nhấn nút sẽ hỏi xác nhận rồi xóa toàn bộ ghi nhớ tương ứng khỏi tệp dữ liệu; hủy thao tác sẽ giữ nguyên dữ liệu.
-6. Mở **Cài đặt** để nhập màu nền theo mã HEX `#RRGGBB`. Nhấn **Lưu** để áp dụng màu mới.
+4. Tin nhắn Agent nằm bên trái, tin nhắn người dùng nằm bên phải; đường dọc giữa khung chat phân chia hai phía. Mỗi tin nhắn hiển thị ngày và giờ gửi.
+5. Nút **Dữ liệu** mở tệp `memories.jsonl` bằng ứng dụng mặc định của Windows.
+6. Các nút **Word** và **Excel** trên mỗi bong bóng xuất riêng nội dung và thời gian của tin nhắn thành `.docx` hoặc `.xlsx`. Màu chữ đã tô được giữ trong tài liệu xuất.
+7. Kéo chọn văn bản trong bong bóng chat rồi nhấn Ctrl+C để sao chép, hoặc chọn **Tô màu** để áp dụng một trong chín màu. Màu trên nội dung ghi nhớ được lưu cùng bản ghi JSONL và vẫn còn khi đọc lại; định dạng của dữ liệu cũ không có màu vẫn được hỗ trợ.
+8. Với bong bóng ghi nhớ, chọn **Sửa** để chỉnh nội dung/danh mục hoặc **Ghim/Bỏ ghim** để ưu tiên ghi nhớ khi tìm kiếm. Có thể nhập danh mục tùy chọn lúc tạo ghi nhớ.
+9. Khi đã chọn bong bóng chứa ghi nhớ, nút **Xóa** sẽ xóa ghi nhớ sau khi xác nhận. Nút **Hoàn tác xóa** xuất hiện trong 10 giây để khôi phục.
+10. **Sao lưu** lưu dữ liệu thành JSONL. **Khôi phục** kiểm tra toàn bộ tệp rồi gộp ghi nhớ theo ID; ID đã tồn tại không bị ghi đè.
+11. Mở **Cài đặt** để nhập màu nền theo mã HEX `#RRGGBB`. Nhấn **Lưu** để áp dụng màu mới.
 
 Mỗi ghi nhớ được nối thêm thành một dòng JSON trong `data\memories.jsonl`; dữ liệu hiện có được giữ nguyên. Khi chạy từ thư mục dự án, vị trí lưu là `D:\PersonalLearningAgent\data\memories.jsonl`. Nếu chạy bản phát hành không kèm thư mục dự án, dữ liệu được lưu trong thư mục dữ liệu ứng dụng thuộc Local AppData.
 

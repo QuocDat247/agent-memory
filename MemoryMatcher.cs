@@ -19,17 +19,23 @@ internal static partial class MemoryMatcher
     ];
 
     public static MemoryMatch? FindBest(string query, IReadOnlyCollection<MemoryEntry> entries)
+        => FindMatches(query, entries, 1).FirstOrDefault();
+
+    public static IReadOnlyList<MemoryMatch> FindMatches(
+        string query,
+        IReadOnlyCollection<MemoryEntry> entries,
+        int maximumResults)
     {
-        if (entries.Count == 0 || string.IsNullOrWhiteSpace(query))
+        if (entries.Count == 0 || string.IsNullOrWhiteSpace(query) || maximumResults <= 0)
         {
-            return null;
+            return [];
         }
 
         var exactId = entries.FirstOrDefault(
             entry => string.Equals(entry.Id, query.Trim(), StringComparison.OrdinalIgnoreCase));
         if (exactId is not null)
         {
-            return new MemoryMatch(exactId, 1);
+            return [new MemoryMatch(exactId, 1)];
         }
 
         var queryTokens = GetTokens(query);
@@ -41,15 +47,23 @@ internal static partial class MemoryMatcher
 
         if (queryTokens.Length == 0)
         {
-            return null;
+            return [];
         }
 
         return entries
-            .Select(entry => new MemoryMatch(entry, Score(query, queryTokens, entry.Text)))
+            .Select(entry => new MemoryMatch(
+                entry,
+                Math.Max(
+                    Score(query, queryTokens, entry.Text),
+                    string.IsNullOrWhiteSpace(entry.Category)
+                        ? 0
+                        : Score(query, queryTokens, entry.Category))))
             .Where(match => match.Similarity > 0)
-            .OrderByDescending(match => match.Similarity)
+            .OrderByDescending(match => match.Entry.IsPinned)
+            .ThenByDescending(match => match.Similarity)
             .ThenByDescending(match => match.Entry.CreatedAt)
-            .FirstOrDefault();
+            .Take(maximumResults)
+            .ToArray();
     }
 
     private static double Score(string query, IReadOnlyList<string> queryTokens, string text)
